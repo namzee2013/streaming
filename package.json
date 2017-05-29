@@ -1,0 +1,12 @@
+{
+  "name": "streaming",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/namzee2013/streaming.git",
+  "author": "Truong Thanh Nam <nam.tt@neo-lab.vn>",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.3"
+  }
+}
