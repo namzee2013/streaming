@@ -71,10 +71,25 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const playVideo = __webpack_require__(2);
+const Peer = __webpack_require__(17);
+const $ = __webpack_require__(34);
 
 function openStream(){
   navigator.mediaDevices.getUserMedia({audio: false, video: true})
-  .then(stream => playVideo(stream, 'localStream'))
+  .then(stream => {
+    playVideo(stream, 'localStream');
+    const p = new Peer({ initiator: location.hash === '#1', trickle: false, stream });
+    p.on('signal', token => {
+      $('#txtMySignal').val(JSON.stringify(token));
+    });
+    $('#btnConnect').click(() => {
+      const friendSignal =  JSON.parse($('#txtFriendSignal').val());
+      p.signal(friendSignal);
+    });
+    p.on('stream', friendStream => {
+      playVideo(friendStream, 'friendStream');
+    });
+  })
   .catch(err => console.log(err));
 }
 
@@ -86,26 +101,8 @@ module.exports = openStream;
 /***/ (function(module, exports, __webpack_require__) {
 
 const openStream = __webpack_require__(0);
-const $ = __webpack_require__(34);
-// openStream();
 
-const Peer = __webpack_require__(17);
-
-const p = new Peer({ initiator: location.hash === '#1', trickle: false });
-
-p.on('signal', token => {
-  $('#txtMySignal').val(JSON.stringify(token));
-});
-p.on('connect', () => {
-  setInterval(() => p.send(Math.random()), 2000);
-});
-p.on('data', data => console.log('Nhan DATA ' + data));
-
-$('#btnConnect').click(() => {
-  const friendSignal =  JSON.parse($('#txtFriendSignal').val());
-  p.signal(friendSignal);
-})
-console.log('hello world!!');
+openStream();
 
 
 /***/ }),
